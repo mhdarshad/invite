@@ -1,0 +1,41 @@
+# Name of the Current Work Flow
+name: "CD Stag Web"
+
+# Branch For the Action to Run
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  pre-release:
+    name: Build And Deploy Flutter Web in Prod
+    runs-on: "ubuntu-latest"
+    # Declare the ENV Variables
+    env:
+      RELEASE_PATH: "releases/"
+      COMMENT: "Nothing to say.."
+      PR_NUMBER: "0"
+      MODE: "release"
+      CD_PATH: "CD/"
+      ENVIRONMENT: "stg"
+      distribution: ${{ secrets.AWS_DISTRIBUTION_ID_STG }}
+    steps:
+    - uses: actions/checkout@v1
+    - uses: subosito/flutter-action@v1
+      with:
+       flutter-version: '3.0.5'
+       channel: stable
+# Flutter Build Actions
+    - name: Config Flutter for Web 
+      run: flutter config --enable-web
+
+    - name: Install Depedencies
+      run: flutter pub get
+
+    - name: Build Web
+      run: |
+        fflutter clean 
+        flutter pub get
+        sed -i "s/applicationId 'com.example.examplepackagechange'/applicationId 'com.cts.ar.demo'/g" android/app/build.gradle
+        flutter build apk
