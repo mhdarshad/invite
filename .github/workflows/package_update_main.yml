@@ -1,11 +1,11 @@
 # Name of the Current Work Flow
-name: "CD Stag Web"
+name: "CD Packege Chang"
 
 # Branch For the Action to Run
 on:
   push:
     branches:
-      - staging
+      - master
 
 jobs:
   pre-release:
