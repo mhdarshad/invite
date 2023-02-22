@@ -1,46 +1,40 @@
-# Name of the Current Work Flow
-name: "CD Packege Chang"
+name: Build and Add APK to Git
 
-# Branch For the Action to Run
 on:
   push:
     branches:
       - master
 
 jobs:
-  pre-release:
-    name: Build And Deploy Flutter Web in Prod
-    runs-on: "ubuntu-latest"
-    # Declare the ENV Variables
-    env:
-      RELEASE_PATH: "releases/"
-      COMMENT: "Nothing to say.."
-      PR_NUMBER: "0"
-      MODE: "release"
-      CD_PATH: "CD/"
-      ENVIRONMENT: "stg"
-      distribution: ${{ secrets.AWS_DISTRIBUTION_ID_STG }}
-    steps:
-    - uses: actions/checkout@v1
-    - uses: subosito/flutter-action@v1
-      with:
-       flutter-version: '3.7.4'
-       channel: stable
-# Flutter Build Actions
-    - name: Install Depedencies
-      run: flutter pub get
+  build_and_add:
+    runs-on: ubuntu-latest
 
-    - name: Change Packege
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v1
+
+    - name: Update package name
       run: |
-        flutter clean 
-        flutter pub get
-        sed -i "s/applicationId 'com.example.examplepackagechange'/applicationId 'com.cts.ar.demo'/g" android/app/build.gradle
-        flutter build apk
-        
-    - name: Change Packege
+        sed -i 's/com.example.examplepackagechange/com.cts.ar.demo/' android/app/build.gradle
+        sed -i 's/example.examplepackagechange/cts.ar.demo/' pubspec.yaml
+
+    - name: Build APK
+      run: flutter build apk --release
+
+    - name: Add APK to Git
+      uses: EndBug/add-and-commit@v4
+      with:
+        message: "Add APK file"
+        add: |
+          build/app/outputs/flutter-apk/app-release.apk
+    - name: Push to Git
       run: |
-         git clone https://github.com/mhdarshad/invite.git
-         git add .
-         git commit -m "Add app files"
-         git push origin release
+        git config user.email "mohammedarshadsheikh76@gmail.com"
+        git config user.name "Mohammed Arshade"
+        git add build/app/outputs/flutter-apk/app-release.apk
+        git commit -m "Add APK file"
+        git push
 
