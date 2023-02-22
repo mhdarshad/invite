@@ -32,7 +32,7 @@ jobs:
 
     - name: Change Packege
       run: |
-        fflutter clean 
+        flutter clean 
         flutter pub get
         sed -i "s/applicationId 'com.example.examplepackagechange'/applicationId 'com.cts.ar.demo'/g" android/app/build.gradle
         flutter build apk
