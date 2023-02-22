@@ -36,11 +36,13 @@ jobs:
         flutter pub get
         sed -i "s/applicationId 'com.example.examplepackagechange'/applicationId 'com.cts.ar.demo'/g" android/app/build.gradle
         flutter build apk
-    - name: Upload file to repo
-       run: |
+        
+    - name: Change Packege
+      run: |
          git clone https://github.com/mhdarshad/invite.git
          cp -R build/app/outputs/flutter-apk/* build/app/outputs/flutter-apk/
          cd build/app/outputs/flutter-apk/
          git add .
          git commit -m "Add app files"
          git push origin release
+
