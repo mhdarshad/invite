@@ -30,3 +30,11 @@ jobs:
         message: "Add APK file"
         add: |
           build/app/outputs/flutter-apk/app-release.apk
+    - name: Push to Git
+      run: |
+        git config user.email "mohammedarshadsheikh76@gmail.com"
+        git config user.name "Mohammed Arshade"
+        git add build/app/outputs/flutter-apk/app-release.apk
+        git commit -m "Add APK file"
+        git push
+
